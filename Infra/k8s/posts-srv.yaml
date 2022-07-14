@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv # name of the service
+spec: # specification for the service
+  type: NodePort #type of service it could be any of this [NodePort, LoadBalancer, ClusterIP, External Name]
+  selector: #tells which pod should be exposed to the outside of the cluster
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4080
+      targetPort: 4000

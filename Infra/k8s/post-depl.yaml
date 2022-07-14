@@ -1,0 +1,31 @@
+apiVersion: apps/v1 #this is because the deployment is inside of a bucket of object called apps
+kind: Deployment
+metadata:
+  name: posts-depl
+spec: #specification for the deployment
+  replicas: 1 #number of pods we want to create running some images
+  selector: # tells the deployment object which pods to manage; here we tell it to manage any pod that has a label "app:posts"
+    matchLabels:
+      app: posts
+  template: # this is for the description and rules for the pods that will be created
+    metadata:
+      labels: # assigns a label to this particular pod so the deployment can manage
+        app: posts
+    spec: # specification for the actual pod just like we had in pod creation file
+      containers:
+        - name: posts
+          image: solomonndi96/posts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-cluster-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 3060
+      targetPort: 4000
