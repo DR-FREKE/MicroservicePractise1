@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const CommentCreate = ({ postId }) => {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    await axios.post(`http://localhost:4001/post/${postId}/comment`, {
+    await axios.post(`http://post.com/post/${postId}/comment`, {
       content,
     });
-    setContent("");
+    setContent('');
   };
   return (
     <div>
@@ -19,7 +19,7 @@ const CommentCreate = ({ postId }) => {
           <label>New Comment</label>
           <input
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={e => setContent(e.target.value)}
             className="form-control"
           />
         </div>

@@ -25,7 +25,7 @@ app.post("/events", async (req, res) => {
     data = { ...data, status };
 
     //send the update to the event bus
-    await axios.post("http://localhost:4005/events", {
+    await axios.post("http://event-bus-srv:5000/events", {
       type: "commentModerated",
       data,
     });

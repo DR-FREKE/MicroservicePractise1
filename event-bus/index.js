@@ -13,16 +13,16 @@ app.get("/events", (req, res) => {
   res.send(all_events);
 });
 
-app.post("/events", (req, res) => {
+app.post("/events", async (req, res) => {
   const data = req.body;
 
   try {
     all_events.push(data);
     console.log(data);
-    axios.post("http://localhost:4000/events", data); // for post service
-    axios.post("http://localhost:4001/events", data); // for comment service
-    axios.post("http://localhost:4002/events", data); // for query service
-    axios.post("http://localhost:4003/events", data); // for moderation service
+    await axios.post("http://posts-cluster-srv:3060/events", data); // for post service
+    await axios.post("http://comments-srv:6000/events", data); // for comment service
+    await axios.post("http://query-srv:8200/events", data); // for query service
+    await axios.post("http://moderation-srv:7000/events", data); // for moderation service
   } catch (error) {
     console.log(error.message);
     res.send(error.message);

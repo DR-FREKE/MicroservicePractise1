@@ -1,0 +1,72 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./Infra/k8s/*
+      # tells skaffold that there is a collection of different config files in the infra/k8s directory.
+      # we are telling skaffold to watch all the yaml files in this directory. anytime we make a change to any of those files,
+      # skaffold will automatically re-apply that config file to our kubernetes cluster; hence this avoid us the hustle of always having to
+      # write k apply -f "name of file" anytime we make cahnges to any of the yaml file.
+      # another advantage of skaffold is that anytime we start skaffold up, it will make sure it creates all the yaml files or
+      # apply all the yaml files and when we stop skaffold, it will remove/delete all the kubernetes object associated with the
+      # different config files giving room for us to work on other project that has to do with kubernetes by freeing up the cluster.
+build:
+  local:
+    push: false # by default, whenever skaffold makes a change to one of our images or rebuilds our images, it is going to
+    # try to push to dockerhub and that is not actually required when we're using skaffold so we disable that behaviour here by
+    # setting push to be false
+  artifacts: # tells skaffold about something inside our project that it needs to maintain
+    # we are essentially saying that there is some pod that is running code out of the [in this case client directory] inside our project
+    # so whenever something changes inside this directory, skaffold is going to take those changes and update our pod
+    # that is if we make a change to any file that matches to the sync->manual->src below, skaffold will take the file and replace the file we have in our pod with this updated one
+    # if we make changes to any file that do not match the sync->manual->src below say for example we made changes to the package.json file that is
+    # outside the src folder; skaffold is just going to rebuild the whole image and update the deployment tied to it
+    - image: solomonndi96/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: 'src/**/*.js'
+          dest: .
+    - image: solomonndi96/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: '*.js'
+          dest: .
+    - image: solomonndi96/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: '*.js'
+          dest: .
+    - image: solomonndi96/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: '*.js'
+          dest: .
+    - image: solomonndi96/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: '*.js'
+          dest: .
+    - image: solomonndi96/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          src: '*.js'
+          dest: .

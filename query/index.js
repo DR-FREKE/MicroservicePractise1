@@ -1,6 +1,6 @@
-const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 
@@ -10,7 +10,7 @@ app.use(cors());
 const posts = {};
 
 const handleEvent = (type, data) => {
-  if (type === "postCreated") {
+  if (type === 'postCreated') {
     // get the post from the data from the event broker
     const { id, title } = data;
     /**
@@ -21,7 +21,7 @@ const handleEvent = (type, data) => {
     posts[id] = { id, title, comments: [] };
   }
 
-  if (type === "commentCreated") {
+  if (type === 'commentCreated') {
     //get the comments from the event broker
     const { commentId, content, post_id, status } = data;
 
@@ -32,24 +32,24 @@ const handleEvent = (type, data) => {
     store.comments = [...store.comments, { commentId, content, status }];
   }
 
-  if (type === "commentUpdated") {
+  if (type === 'commentUpdated') {
     // do something...
     const { commentId, content, post_id, status } = data;
     const store = posts[post_id];
 
     const comment = store.comments.find(
-      (comment) => comment.commentId == commentId
+      comment => comment.commentId == commentId
     );
     comment.status = status;
   }
 };
 
-app.get("/blog", (req, res) => {
+app.get('/blog', (req, res) => {
   //
   res.send(posts);
 });
 
-app.post("/events", (req, res) => {
+app.post('/events', (req, res) => {
   const { type, data } = req.body;
 
   handleEvent(type, data);
@@ -59,10 +59,12 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(4002, async () => {
-  console.log("app listening at port 4002");
+  console.log('app listening at port 4002');
 
-  const res = await axios.get("http://localhost:4005/events");
-  for (let event of res.data) {
-    handleEvent(event.type, event.data);
-  }
+  try {
+    const res = await axios.get('http://event-bus-srv:5000/events');
+    for (let event of res.data) {
+      handleEvent(event.type, event.data);
+    }
+  } catch (error) {}
 });

@@ -1,6 +1,6 @@
-import logo from "./logo.svg";
-import PostCreate from "./PostCreate";
-import PostList from "./PostList";
+import logo from './logo.svg';
+import PostCreate from './PostCreate';
+import PostList from './PostList';
 
 const App = () => (
   <div className="container">

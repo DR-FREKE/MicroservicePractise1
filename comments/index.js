@@ -28,7 +28,7 @@ app.post("/post/:id/comment", async (req, res) => {
   commentsByPostId[req.params.id] = comments;
 
   // send comment data to the event broker on port 4005
-  await axios.post("http://localhost:4005/events", {
+  await axios.post("http://event-bus-srv:5000/events", {
     type: "commentCreated",
     data: { commentId, content, post_id: req.params.id, status: "pending" },
   });
@@ -45,11 +45,13 @@ app.post("/events", async (req, res) => {
     const comment = comments.find((comment) => comment.commentId == commentId);
     comment.status = status;
     // send the moderated data back to event broker
-    await axios.post("http://localhost:4005/events", {
+    await axios.post("http://event-bus-srv:5000/events", {
       type: "commentUpdated",
       data: { post_id, content, commentId, status },
     });
   }
+
+  console.log(data);
 
   res.send({});
 });
