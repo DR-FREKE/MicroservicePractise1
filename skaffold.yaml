@@ -3,7 +3,7 @@ kind: Config
 deploy:
   kubectl:
     manifests:
-      - ./infra/k8s/*
+      - ./Infra/k8s/*
       # tells skaffold that there is a collection of different config files in the infra/k8s directory.
       # we are telling skaffold to watch all the yaml files in this directory. anytime we make a change to any of those files,
       # skaffold will automatically re-apply that config file to our kubernetes cluster; hence this avoid us the hustle of always having to
